@@ -1,4 +1,7 @@
 /* src/App.css */
+/* Purpose: Global stylesheet for layout, cards, inputs, buttons and table styles.
+  - Provides consistent visual design for the CRUD UI (cards, table, inputs, buttons).
+*/
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 body {

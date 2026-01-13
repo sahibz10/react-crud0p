@@ -1,34 +1,38 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../context/UserContext";
-import { FaEdit, FaTrash, FaUserPlus, FaSearch } from "react-icons/fa"; // Import Icons
+import { FaEdit, FaTrash, FaUserPlus, FaSearch } from "react-icons/fa"; 
 
 const UserList = () => {
-  const { users, deleteUser } = useUserContext();
+  const { users, deleteUser, loading, error } = useUserContext();
   const [searchTerm, setSearchTerm] = useState("");
+
+  if (loading) return <div className="container" style={{textAlign:'center', marginTop:'50px'}}><h2>Loading Employees...</h2></div>;
+  if (error) return <div className="container" style={{textAlign:'center', color:'red'}}><h2>Error: {error}</h2></div>;
 
   const filteredUsers = users.filter((user) => {
     const term = searchTerm.toLowerCase();
-    return (
-      user.name.toLowerCase().includes(term) ||
-      user.role.toLowerCase().includes(term) ||
-      user.email.toLowerCase().includes(term)
-    );
+    const name = (user.name || "").toLowerCase();
+    const email = (user.email || "").toLowerCase();
+
+    // Removed role check
+    return name.includes(term) || email.includes(term);
   });
 
   return (
     <div className="container">
-      <div className="card"> {/* Wrapped in Card */}
+      <div className="card">
         <div className="list-header">
           <h2>Employee List</h2>
           
           <div style={{position: 'relative'}}>
-            <FaSearch style={{position: 'absolute', left: '10px', top: '22px', color: '#888'}} />
+            <FaSearch style={{position: 'absolute', left: '10px', top: '12px', color: '#888'}} />
             <input 
               type="text" 
-              placeholder="Search employees..." 
+              placeholder="Search by name or email..." 
               className="search-bar"
-              style={{paddingLeft: '35px'}} // Make room for icon
+              style={{paddingLeft: '35px'}}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -45,7 +49,6 @@ const UserList = () => {
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Role</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -55,25 +58,16 @@ const UserList = () => {
                   <tr key={user.id}>
                     <td><strong>{user.name}</strong></td>
                     <td>{user.email}</td>
-                    <td><span style={{background: '#e0f2fe', color: '#0369a1', padding: '4px 8px', borderRadius: '4px', fontSize: '12px'}}>{user.role}</span></td>
                     <td>
                       <div style={{display: 'flex', gap: '10px'}}>
-                        <Link to={`/edit/${user.id}`} className="btn-edit">
-                          <FaEdit /> 
-                        </Link>
-                        <button onClick={() => deleteUser(user.id)} className="btn-delete">
-                          <FaTrash /> 
-                        </button>
+                        <Link to={`/edit/${user.id}`} className="btn-edit"><FaEdit /></Link>
+                        <button onClick={() => deleteUser(user.id)} className="btn-delete"><FaTrash /></button>
                       </div>
                     </td>
                   </tr>
                 ))
               ) : (
-                <tr>
-                  <td colSpan="4" style={{textAlign: "center", padding: "30px", color: "#888"}}>
-                    No employees found.
-                  </td>
-                </tr>
+                <tr><td colSpan="3" style={{textAlign: "center", padding: "20px"}}>No employees found.</td></tr>
               )}
             </tbody>
           </table>

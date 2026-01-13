@@ -1,3 +1,6 @@
+// eslint.config.js
+// Purpose: ESLint flat config for this project. Sets rules and parsing options
+// - Targets JS/JSX files and includes react-hooks and refresh plugins.
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
